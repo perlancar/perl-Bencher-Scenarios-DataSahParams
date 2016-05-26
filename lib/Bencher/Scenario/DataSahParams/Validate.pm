@@ -11,28 +11,51 @@ our $scenario = {
     summary => 'Measure validation speed',
     participants => [
         {
-            name => 'dsp',
+            name => 'dsp_int',
             module => 'Data::Sah::Params',
-            code_template => q(state $check = Data::Sah::Params::compile("int*", ["array*",of=>"int*"]); $check->(@{<args>})),
+            code_template => q(state $check = Data::Sah::Params::compile("int*"); $check->(@{<args>})),
+            tags => ['int'],
         },
         {
-            name => 'tp',
+            name => 'tp_int',
+            module => 'Type::Params',
+            code_template => q(use Type::Params qw(compile); use Types::Standard qw(Int); state $check = compile(Int); $check->(@{<args>})),
+            tags => ['int'],
+        },
+
+        {
+            name => 'dsp_int_int[]',
+            module => 'Data::Sah::Params',
+            code_template => q(state $check = Data::Sah::Params::compile("int*", ["array*",of=>"int*"]); $check->(@{<args>})),
+            tags => ['int_int[]'],
+        },
+        {
+            name => 'tp_int_int[]',
             module => 'Type::Params',
             code_template => q(use Type::Params qw(compile); use Types::Standard qw(Int ArrayRef); state $check = compile(Int, ArrayRef[Int]); $check->(@{<args>})),
+            tags => ['int_int[]'],
         },
     ],
     datasets => [
         {
+            name => '1',
+            args => { args => [1] },
+            include_participant_tags => ['int'],
+        },
+        {
             name => '1,[]',
             args => { args => [1,[]] },
+            include_participant_tags => ['int_int[]'],
         },
         {
             name => '1,[1..10]',
             args => { args => [1,[1..10]] },
+            include_participant_tags => ['int_int[]'],
         },
         {
             name => '1,[1..100]',
             args => { args => [1,[1..100]] },
+            include_participant_tags => ['int_int[]'],
         },
     ],
 };
